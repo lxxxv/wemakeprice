@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <meta charset="UTF-8">
+    <title>SEO DONG JIN</title>
+</head>
+<body>
+<div class="container" style="width:400px;">
+    <div>
+        [입력]
+        <br><br>
+    </div>
+
+    <div>
+        URL <input type="text" name="url" id="url" class="form-control" required="required" th:value="*{url}" style="width:89%" />
+        <br><br>
+    </div>
+
+    <div>
+        Type <select name="outType" id="outType" th:field="*{outputType}" class="form-select" style="width:90%">
+            <option th:each="outputType:${outputTypes}" th:value="${outputType.code}" th:text="${outputType.displayName}">EXPORTTAG</option>
+        </select>
+        <br><br>
+    </div>
+
+    <div>
+        출력 단위 묶음 <input type="text" name="printGroup" id="printGroup" class="form-control" required="required" th:value="*{printGroup}" style="width:69%" />
+        <br><br>
+    </div>
+
+    <div style="text-align:right;">
+        <button type="button" onclick="getResultList()">출력</button>
+        <br><br>
+    </div>
+
+    <div id="resultPrintPage"></div>
+</div>
+</body>
+
+<script type="text/javascript">
+    function getResultList() {
+        var url=$("#url").val();
+        var group=$("#printGroup").val();
+        var outputType=$("#outType").val();
+
+        var messageDTO={
+            url:url,
+            outputType:outputType,
+            group:group
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/buildRequest",
+            data: messageDTO,
+        })
+            .done(function (result) {
+                console.log(result);
+                $("#resultPrintPage").replaceWith(result);
+            })
+            .fail(function(jqXHR) {
+                console.log(jqXHR);
+            })
+    }
+</script>
+</html>
